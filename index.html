@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GARCIA | Buscador del futuro</title>
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: Arial, sans-serif;
+    color: white;
+    background:
+      radial-gradient(ellipse at 50% 45%, #06366c 0%, #03152f 42%, #010711 85%);
+    overflow-x: hidden;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+      radial-gradient(2px 2px at 20% 30%, #55caff 50%, transparent),
+      radial-gradient(2px 2px at 70% 20%, white 50%, transparent),
+      radial-gradient(2px 2px at 85% 65%, #168bff 50%, transparent),
+      radial-gradient(1px 1px at 40% 80%, white 50%, transparent);
+    background-size: 180px 180px;
+    opacity: .65;
+}
+
+header {
+    padding: 25px 35px;
+    display: flex;
+    justify-content: space-between;
+    color: #8bdcff;
+    letter-spacing: 3px;
+}
+
+main {
+    position: relative;
+    text-align: center;
+    padding: 75px 15px 150px;
+}
+
+h1 {
+    font-size: clamp(55px, 10vw, 105px);
+    margin: 15px 0;
+    letter-spacing: 12px;
+    color: white;
+    text-shadow: 0 0 12px #00aaff,
+                 0 0 35px #0077ff,
+                 0 0 65px #0055ff;
+}
+
+.subtitle {
+    color: #7edaff;
+    letter-spacing: 7px;
+    margin-bottom: 55px;
+}
+
+.search {
+    display: flex;
+    align-items: center;
+    max-width: 850px;
+    margin: auto;
+    padding: 8px 18px;
+    border: 2px solid #00bfff;
+    border-radius: 50px;
+    background: #061a35dd;
+    box-shadow: 0 0 15px #00aaff,
+                0 0 40px #0066ff66;
+}
+
+.search input {
+    flex: 1;
+    min-width: 0;
+    padding: 17px 12px;
+    color: white;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-size: 18px;
+}
+
+.search input::placeholder {
+    color: #8ab6d8;
+}
+
+.search button {
+    color: #00cfff;
+    border: none;
+    background: transparent;
+    font-size: 25px;
+    cursor: pointer;
+}
+
+.categories {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-top: 45px;
+}
+
+.categories button {
+    padding: 16px 25px;
+    border: 1px solid #087bd4;
+    border-radius: 12px;
+    color: white;
+    background: #071b39;
+    cursor: pointer;
+    font-size: 16px;
+    transition: .25s;
+}
+
+.categories button:hover,
+.categories button.active {
+    background: #006bd6;
+    box-shadow: 0 0 20px #00aaff;
+    border-color: #00d9ff;
+    transform: translateY(-3px);
+}
+
+.earth {
+    position: fixed;
+    bottom: -230px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(1100px, 120vw);
+    height: 300px;
+    border-radius: 50% 50% 0 0;
+    border-top: 3px solid #00bfff;
+    background: radial-gradient(ellipse at top, #0874c9aa, #03132d 65%, transparent);
+    box-shadow: 0 -10px 55px #008cff77;
+    pointer-events: none;
+}
+
+footer {
+    position: relative;
+    text-align: center;
+    color: #6caddd;
+    padding: 20px;
+    margin-top: 35px;
+    font-size: 13px;
+    letter-spacing: 3px;
+}
+
+@media(max-width:600px) {
+    main { padding-top: 65px; }
+    h1 { letter-spacing: 5px; }
+    .subtitle { letter-spacing: 3px; }
+    .categories button { padding: 12px 16px; }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <span>◎ GARCIA</span>
+    <span>BUSCADOR INTELIGENTE</span>
+</header>
+
+<main>
+    <h1>GARCIA</h1>
+    <div class="subtitle">TU BUSCADOR, SIN LÍMITES</div>
+
+    <form class="search" id="formulario">
+        <span>⌕</span>
+        <input id="consulta" type="search"
+        placeholder="Buscar en Internet..." required>
+        <button type="submit" title="Buscar">➜</button>
+    </form>
+
+    <div class="categories">
+        <button class="active" data-mode="web">⌕ Web</button>
+        <button data-mode="images">▧ Imágenes</button>
+        <button data-mode="videos">▷ Vídeos</button>
+        <button data-mode="news">▤ Noticias</button>
+    </div>
+</main>
+
+<div class="earth"></div>
+
+<footer>
+    GARCIA · BUSCAR · EXPLORAR · DESCUBRIR
+</footer>
+
+<script>
+let modo = "web";
+
+document.querySelectorAll(".categories button")
+.forEach(boton => {
+    boton.addEventListener("click", () => {
+        modo = boton.dataset.mode;
+
+        document.querySelectorAll(".categories button")
+        .forEach(b => b.classList.remove("active"));
+
+        boton.classList.add("active");
+    });
+});
+
+document.getElementById("formulario")
+.addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    const texto = document.getElementById("consulta").value.trim();
+    if (!texto) return;
+
+    let url = "https://duckduckgo.com/?q=" +
+              encodeURIComponent(texto);
+
+    if (modo === "images") url += "&iax=images&ia=images";
+    if (modo === "videos") url += "&iax=videos&ia=videos";
+    if (modo === "news") url += "&ia=news";
+
+    window.open(url, "_blank");
+});
+</script>
+
+</body>
+</html>
